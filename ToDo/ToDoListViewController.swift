@@ -35,6 +35,7 @@ class ToDoListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+        //Check/uncheck item in the list
         if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
            tableView.cellForRow(at: indexPath)?.accessoryType = .none
         }
@@ -43,7 +44,30 @@ class ToDoListViewController: UITableViewController {
         }
         
         tableView.deselectRow(at: indexPath, animated: true)
-    
     }
+    
+    //MARK: Add new item
+    
+    
+    @IBAction func addNewItem(_ sender: UIBarButtonItem) {
+        
+        var userInput = UITextField()
+        let alert = UIAlertController(title: "Add ToDO item", message: "", preferredStyle: .alert)
+        
+        alert.addTextField { (textField) in
+            textField.placeholder = "Create a new ToDo item"
+            userInput = textField
+        }
+        
+        alert.addAction(UIAlertAction(title: "Add item", style: .default, handler: { (alert) in
+            self.toDoTextArray.append(userInput.text!)
+            self.tableView.reloadData()
+            
+        }))
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    
 }
 
