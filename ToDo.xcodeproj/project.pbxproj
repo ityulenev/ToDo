@@ -41,7 +41,8 @@
 			isa = PBXGroup;
 			children = (
 				6ADC0761221F277D00DA8F9D /* Model */,
-				6ADC074E221DD0E500DA8F9D /* ToDo */,
+				6ADC0764221F4DD400DA8F9D /* View */,
+				6ADC074E221DD0E500DA8F9D /* Controllers */,
 				6ADC074D221DD0E500DA8F9D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -54,17 +55,16 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		6ADC074E221DD0E500DA8F9D /* ToDo */ = {
+		6ADC074E221DD0E500DA8F9D /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				6ADC074F221DD0E500DA8F9D /* AppDelegate.swift */,
 				6ADC0751221DD0E500DA8F9D /* ToDoListViewController.swift */,
-				6ADC0753221DD0E500DA8F9D /* Main.storyboard */,
 				6ADC0756221DD0E700DA8F9D /* Assets.xcassets */,
 				6ADC0758221DD0E700DA8F9D /* LaunchScreen.storyboard */,
 				6ADC075B221DD0E700DA8F9D /* Info.plist */,
 			);
-			path = ToDo;
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 		6ADC0761221F277D00DA8F9D /* Model */ = {
@@ -73,6 +73,14 @@
 				6ADC0762221F27C400DA8F9D /* ToDoItem.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		6ADC0764221F4DD400DA8F9D /* View */ = {
+			isa = PBXGroup;
+			children = (
+				6ADC0753221DD0E500DA8F9D /* Main.storyboard */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -296,7 +304,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = GYZ4VU596C;
-				INFOPLIST_FILE = ToDo/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Controllers/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -314,7 +322,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = GYZ4VU596C;
-				INFOPLIST_FILE = ToDo/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Controllers/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

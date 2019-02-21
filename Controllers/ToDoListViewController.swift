@@ -10,15 +10,16 @@ import UIKit
 
 class ToDoListViewController: UITableViewController {
     
-    var toDoTextArray = ["Clean bath", "Meet Mike", "Call Bob"]
+    var toDoTextArray = [ToDoItem]()
     let defaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.separatorStyle = .none
-       if let items = defaults.array(forKey: "defaultsArray") as? [String] {
-            toDoTextArray = items
+        
+       if let items = defaults.object(forKey: "defaultsArray") {
+        toDoTextArray = items as! [ToDoItem]
         }
     }
     
@@ -28,8 +29,12 @@ class ToDoListViewController: UITableViewController {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoCell", for: indexPath)
         
-        cell.textLabel?.text = toDoTextArray[indexPath.row]
+        cell.textLabel?.text = toDoTextArray[indexPath.row].itemBody
         
+        //Give item check/uncheck property from the database
+        
+        cell.accessoryType = toDoTextArray[indexPath.row].done ? .none : .checkmark
+
         return cell
     }
     
@@ -40,12 +45,8 @@ class ToDoListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         //Check/uncheck item in the list
-        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
-           tableView.cellForRow(at: indexPath)?.accessoryType = .none
-        }
-        else {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        }
+        toDoTextArray[indexPath.row].done = !toDoTextArray[indexPath.row].done
+        
         
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -56,6 +57,7 @@ class ToDoListViewController: UITableViewController {
     @IBAction func addNewItem(_ sender: UIBarButtonItem) {
         
         var userInput = UITextField()
+        
         let alert = UIAlertController(title: "Add ToDO item", message: "", preferredStyle: .alert)
         
         alert.addTextField { (textField) in
@@ -64,7 +66,11 @@ class ToDoListViewController: UITableViewController {
         }
         
         alert.addAction(UIAlertAction(title: "Add item", style: .default, handler: { (alert) in
-            self.toDoTextArray.append(userInput.text!)
+            
+            let newItem = ToDoItem()
+            newItem.itemBody = userInput.text!
+            self.toDoTextArray.append(newItem)
+            
             self.defaults.set(self.toDoTextArray, forKey: "defaultsArray")
             self.tableView.reloadData()
             
