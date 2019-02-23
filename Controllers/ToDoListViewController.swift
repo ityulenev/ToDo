@@ -7,22 +7,24 @@
 //
 
 import UIKit
+import CoreData
 
 class ToDoListViewController: UITableViewController {
     
     var toDoTextArray = [ToDoItem]()
-    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("ToDoItems.plist")
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.separatorStyle = .none
-        
+        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         loadData()
         
     }
-    
-    //MARK: Set TableView methods
+    //===============================================================
+    //MARK: - Set TableView methods
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoCell", for: indexPath)
@@ -42,14 +44,17 @@ class ToDoListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+        //toDoTextArray[indexPath.row].setValue("Updated itemBody", forKey: "itemBody") //update Database
+//          context.delete(toDoTextArray[indexPath.row])
+//          toDoTextArray.remove(at: indexPath.row)
+        
         //Check/uncheck item in the list
         toDoTextArray[indexPath.row].done = !toDoTextArray[indexPath.row].done
         saveData()
         tableView.deselectRow(at: indexPath, animated: true)
     }
-    
-    //MARK: Add new item
-    
+    //=======================================================================
+    //MARK: - Add new item
     
     @IBAction func addNewItem(_ sender: UIBarButtonItem) {
         
@@ -64,9 +69,10 @@ class ToDoListViewController: UITableViewController {
         
         alert.addAction(UIAlertAction(title: "Add item", style: .default, handler: { (alert) in
             
-            let newItem = ToDoItem()
+            let newItem = ToDoItem(context: self.context)
             newItem.itemBody = userInput.text!
             self.toDoTextArray.append(newItem)
+            
             
             self.saveData()
             
@@ -75,43 +81,60 @@ class ToDoListViewController: UITableViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
-    //MARK : Create functions to dave and load local data
+    //=====================================================================
+    //MARK: - Create functions to save and load data from CoreData
     
-    //Func to encode and store data in the local .plist
     func saveData() {
-        let encoder = PropertyListEncoder()
         
-        do {
-            let data = try encoder.encode(toDoTextArray)
             do {
-                try data.write(to: dataFilePath!)
+                try context.save()
             }
             catch {
-                print("Error encoding item array, \(error)")
+                print("Error while saving data, \(error)")
             }
-        }
-        catch {
-            
-        }
         
         tableView.reloadData()
         
     }
     
     //Load data
-    func loadData(){
-        if let data = try? Data(contentsOf: dataFilePath!){
-            
-            let decoder = PropertyListDecoder()
+    func loadData(with request : NSFetchRequest<ToDoItem> = ToDoItem.fetchRequest()){
+        
             do {
-                toDoTextArray = try decoder.decode([ToDoItem].self, from: data)
+                toDoTextArray = try context.fetch(request)
             }
             catch {
-                print("Error loading data, \(error)")
+                print("Error fetcing data from context, \(error)")
             }
+        
+        tableView.reloadData()
+
         }
-     
+}
+
+//=======================================================================
+//MARK: - Search bar Methods
+extension ToDoListViewController : UISearchBarDelegate {
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        //Get user search input
+        let request : NSFetchRequest<ToDoItem> = ToDoItem.fetchRequest()
+        request.predicate = NSPredicate(format: "itemBody CONTAINS[cd] %@", searchBar.text!)
+        
+        //Set sort filter
+        request.sortDescriptors = [NSSortDescriptor(key: "itemBody", ascending: true)]
+        
+        loadData(with: request)
+        
     }
     
+    
+    
+
+    
+    
 }
+    
+
 
