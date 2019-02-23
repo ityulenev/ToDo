@@ -116,23 +116,25 @@ class ToDoListViewController: UITableViewController {
 //MARK: - Search bar Methods
 extension ToDoListViewController : UISearchBarDelegate {
     
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
-        //Get user search input
-        let request : NSFetchRequest<ToDoItem> = ToDoItem.fetchRequest()
-        request.predicate = NSPredicate(format: "itemBody CONTAINS[cd] %@", searchBar.text!)
+        if searchBar.text?.count != 0 {
         
-        //Set sort filter
-        request.sortDescriptors = [NSSortDescriptor(key: "itemBody", ascending: true)]
+            //Get user search input
+            let request : NSFetchRequest<ToDoItem> = ToDoItem.fetchRequest()
+            request.predicate = NSPredicate(format: "itemBody CONTAINS[cd] %@", searchBar.text!)
+            
+            //Set sort filter
+            request.sortDescriptors = [NSSortDescriptor(key: "itemBody", ascending: true)]
+            
+            loadData(with: request)
+        }
         
-        loadData(with: request)
-        
+        else {
+            //Without any filter
+            loadData()
+        }
     }
-    
-    
-    
-
-    
     
 }
     
