@@ -19,7 +19,7 @@ class ToDoListViewController: UITableViewController {
         super.viewDidLoad()
         
         tableView.separatorStyle = .none
-        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        
         loadData()
         
     }
@@ -116,10 +116,15 @@ class ToDoListViewController: UITableViewController {
 //MARK: - Search bar Methods
 extension ToDoListViewController : UISearchBarDelegate {
     
+    //Searching methods
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = true
+    }
+    
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
         if searchBar.text?.count != 0 {
-        
+            
             //Get user search input
             let request : NSFetchRequest<ToDoItem> = ToDoItem.fetchRequest()
             request.predicate = NSPredicate(format: "itemBody CONTAINS[cd] %@", searchBar.text!)
@@ -136,7 +141,23 @@ extension ToDoListViewController : UISearchBarDelegate {
         }
     }
     
-}
+    //End search methods-----------------------------------------------------
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.setShowsCancelButton(false, animated: true)
+        searchBar.resignFirstResponder()
+        loadData()
+    }
     
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.endEditing(true)
+        
+        if let cancelButton = searchBar.value(forKey: "cancelButton") as? UIButton {
+        cancelButton.isEnabled = true
+    }
+        
+    }
+    
+}
 
 
