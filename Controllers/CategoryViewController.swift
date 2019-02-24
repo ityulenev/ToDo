@@ -21,6 +21,8 @@ class CategoryViewController: UIViewController, UITableViewDelegate, UITableView
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+            
         categoryTableView.delegate = self
         categoryTableView.dataSource = self
         
@@ -45,6 +47,16 @@ class CategoryViewController: UIViewController, UITableViewDelegate, UITableView
         return categoryArray.count
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        performSegue(withIdentifier: "goToItems", sender: indexPath)
+        
+        
+        
+        categoryTableView.deselectRow(at: indexPath, animated: true)
+        
+    }
+    
     //===================================================================
     //MARK: - Done Button pressed
     @IBAction func addingCategoryDone(_ sender: UITextField) {
@@ -52,7 +64,7 @@ class CategoryViewController: UIViewController, UITableViewDelegate, UITableView
         if addCategoryBar.text?.count != 0 {
             let newCategory = Category(context: context)
             newCategory.categoryName = addCategoryBar.text
-            categoryArray.append(newCategory)
+            categoryArray.insert(newCategory, at: 0)
             addCategoryBar.text = ""
             
             saveData()
@@ -80,6 +92,7 @@ class CategoryViewController: UIViewController, UITableViewDelegate, UITableView
         
         do {
             categoryArray = try context.fetch(request)
+            categoryArray.reverse() //reverse DataBase order to show newest items
         }
         catch {
             print("Error fetcing data from context, \(error)")

@@ -71,7 +71,7 @@ class ToDoListViewController: UITableViewController {
             
             let newItem = ToDoItem(context: self.context)
             newItem.itemBody = userInput.text!
-            self.toDoTextArray.append(newItem)
+            self.toDoTextArray.insert(newItem, at: 0)
             
             
             self.saveData()
@@ -102,6 +102,7 @@ class ToDoListViewController: UITableViewController {
         
             do {
                 toDoTextArray = try context.fetch(request)
+                toDoTextArray.reverse() //reverse DataBase order to show newest items
             }
             catch {
                 print("Error fetcing data from context, \(error)")
@@ -125,14 +126,18 @@ extension ToDoListViewController : UISearchBarDelegate {
         
         if searchBar.text?.count != 0 {
             
+            print(toDoTextArray)
+            
             //Get user search input
             let request : NSFetchRequest<ToDoItem> = ToDoItem.fetchRequest()
             request.predicate = NSPredicate(format: "itemBody CONTAINS[cd] %@", searchBar.text!)
             
             //Set sort filter
-            request.sortDescriptors = [NSSortDescriptor(key: "itemBody", ascending: true)]
+            //request.sortDescriptors = [NSSortDescriptor(key: "itemBody", ascending: true)]
             
             loadData(with: request)
+            
+            print(toDoTextArray)
         }
         
         else {

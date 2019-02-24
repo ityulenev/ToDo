@@ -23,7 +23,7 @@
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="zwz-Kg-V2L" secondAttribute="height" multiplier="404:99" id="Rp9-LB-8kF"/>
                                 </constraints>
-                                <nil key="textColor"/>
+                                <color key="textColor" red="0.20391698582589379" green="0.40541179037735037" blue="0.54110485406091369" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="40"/>
                                 <textInputTraits key="textInputTraits" returnKeyType="done"/>
                                 <connections>
