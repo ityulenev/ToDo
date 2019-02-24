@@ -152,10 +152,16 @@ extension ToDoListViewController : UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.endEditing(true)
         
-        if let cancelButton = searchBar.value(forKey: "cancelButton") as? UIButton {
-        cancelButton.isEnabled = true
-    }
+        if searchBar.text?.count != 0 {
         
+            if let cancelButton = searchBar.value(forKey: "cancelButton") as? UIButton {
+            cancelButton.isEnabled = true
+            }
+        }
+        else {
+            searchBar.setShowsCancelButton(false, animated: true)
+            searchBar.resignFirstResponder()
+        }
     }
     
 }
