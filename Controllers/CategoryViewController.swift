@@ -50,11 +50,18 @@ class CategoryViewController: UIViewController, UITableViewDelegate, UITableView
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         performSegue(withIdentifier: "goToItems", sender: indexPath)
-        
-        
-        
         categoryTableView.deselectRow(at: indexPath, animated: true)
-        
+    }
+    
+    //Identify Category in ToDoListViewController while performing segue
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "goToItems" {
+            let destinationVC = segue.destination as! ToDoListViewController
+            
+            if let indexPath = categoryTableView.indexPathForSelectedRow {
+                destinationVC.selectedCategory = categoryArray[indexPath.row]
+            }
+        }
     }
     
     //===================================================================

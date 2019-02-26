@@ -13,14 +13,16 @@ class ToDoListViewController: UITableViewController {
     
     var toDoTextArray = [ToDoItem]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    var  selectedCategory : Category? {
+        didSet {
+            loadData()
+        }
+    }
 
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.separatorStyle = .none
-        
-        loadData()
         
     }
     //===============================================================
@@ -71,6 +73,7 @@ class ToDoListViewController: UITableViewController {
             
             let newItem = ToDoItem(context: self.context)
             newItem.itemBody = userInput.text!
+            newItem.parentCategory = self.selectedCategory
             self.toDoTextArray.insert(newItem, at: 0)
             
             
@@ -98,9 +101,19 @@ class ToDoListViewController: UITableViewController {
     }
     
     //Load data
-    func loadData(with request : NSFetchRequest<ToDoItem> = ToDoItem.fetchRequest()){
+    func loadData(with request : NSFetchRequest<ToDoItem> = ToDoItem.fetchRequest(), predicate : NSPredicate? = nil){
         
             do {
+                
+                let categoryPredicate = NSPredicate(format: "parentCategory.categoryName MATCHES %@", self.selectedCategory!.categoryName!)
+                
+                if let additionalPredicate = predicate {
+                    request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, additionalPredicate])
+                }
+                else {
+                    request.predicate = categoryPredicate
+                }
+                
                 toDoTextArray = try context.fetch(request)
                 toDoTextArray.reverse() //reverse DataBase order to show newest items
             }
@@ -130,12 +143,12 @@ extension ToDoListViewController : UISearchBarDelegate {
             
             //Get user search input
             let request : NSFetchRequest<ToDoItem> = ToDoItem.fetchRequest()
-            request.predicate = NSPredicate(format: "itemBody CONTAINS[cd] %@", searchBar.text!)
+            let predicate = NSPredicate(format: "itemBody CONTAINS[cd] %@", searchBar.text!)
             
             //Set sort filter
             //request.sortDescriptors = [NSSortDescriptor(key: "itemBody", ascending: true)]
             
-            loadData(with: request)
+            loadData(with: request, predicate: predicate)
             
             print(toDoTextArray)
         }
